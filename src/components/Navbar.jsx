@@ -51,6 +51,7 @@ function Navbar() {
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* Notification Bell */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => {
@@ -73,6 +74,7 @@ function Navbar() {
             )}
           </div>
 
+          {/* Profile Dropdown */}
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => {
@@ -85,7 +87,8 @@ function Navbar() {
             </button>
             {showProfile && (
               <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                <Link to="/account" className="block px-4 py-2 hover:bg-gray-100 text-black">
+                {/* ✅ Updated Link */}
+                <Link to="/my-profile" className="block px-4 py-2 hover:bg-gray-100 text-black">
                   My Account
                 </Link>
                 <Link to="/logout" className="block px-4 py-2 hover:bg-gray-100 text-black">

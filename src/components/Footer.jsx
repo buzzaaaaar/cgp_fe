@@ -25,14 +25,14 @@ function Footer() {
             <ul className="space-y-1">
               <li><Link to="/AboutUs" className="hover:text-green-400">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-green-400">Contact Us</Link></li>
-              <li><a href="#" className="hover:text-green-400">Terms and Conditions</a></li>
-              <li><a href="#" className="hover:text-green-400">Privacy Policy</a></li>
+              <li><Link to="/terms" className="hover:text-green-400">Terms and Conditions</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-green-400">Privacy Policy</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-bold mb-2">SUPPORT →</h3>
             <ul className="space-y-1">
-              <li><a href="#" className="hover:text-green-400">FAQs</a></li>
+              <li><Link to="/faq" className="hover:text-green-400">FAQ</Link></li>
             </ul>
           </div>
         </div>
