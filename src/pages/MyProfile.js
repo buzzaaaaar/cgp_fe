@@ -52,15 +52,55 @@ function MyProfile() {
             </div>
           </div>
         );
-      case 'changePassword':
-        return (
-          <div className="text-[#013024] space-y-4">
-            <h2 className="text-4xl font-bold">Change Password</h2>
-            <p className="text-base">
-              You can change your current password here. Make sure it’s strong and secure.
-            </p>
-          </div>
-        );
+        case 'changePassword':
+  return (
+    <div className="text-[#013024] space-y-8">
+      <h2 className="text-4xl font-bold">Change Password</h2>
+      <form className="space-y-6">
+        <div className="w-[35%]">
+          <label className="block text-sm font-medium mb-1">Current password*</label>
+          <input
+            type="password"
+            className="w-full border-[2px] border-[#D4D4D4] rounded-md px-4 py-2 focus:outline-none"
+            required
+          />
+        </div>
+        <div className="w-[35%]">
+          <label className="block text-sm font-medium mb-1">New password*</label>
+          <input
+            type="password"
+            className="w-full border-[2px] border-[#D4D4D4] rounded-md px-4 py-2 focus:outline-none"
+            required
+          />
+        </div>
+        <div className="w-[35%]">
+          <label className="block text-sm font-medium mb-1">Confirm new password*</label>
+          <input
+            type="password"
+            className="w-full border-[2px] border-[#D4D4D4] rounded-md px-4 py-2 focus:outline-none"
+            required
+          />
+        </div>
+        <div className="flex justify-start gap-4 pt-4">
+          <button
+            type="submit"
+            className="px-8 py-2 bg-[#7FAF37] text-white rounded-md font-semibold hover:bg-white hover:text-[#7FAF37] border border-[#7FAF37] transition-all"
+          >
+            SAVE
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('summary')}
+            className="px-8 py-2 bg-[#7FAF37] text-white rounded-md font-semibold hover:bg-white hover:text-[#7FAF37] border border-[#7FAF37] transition-all"
+          >
+            CANCEL
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+
+          
       case 'deleteAccount':
         return (
           <div className="text-[#013024] space-y-4">

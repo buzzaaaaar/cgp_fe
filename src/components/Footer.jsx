@@ -4,6 +4,7 @@ function Footer() {
   return (
     <footer className="relative bg-green-950 text-white overflow-hidden mt-0">
       <div className="flex flex-col md:flex-row min-h-[300px] relative">
+        {/* Left Section with Wider Half-Circle on the Left */}
         <div className="relative w-full md:w-1/2 bg-white clip-left-footer flex items-center justify-start pl-6">
           <img
             src="Images/RankmeoneNavbarLogo2.png"
@@ -11,7 +12,9 @@ function Footer() {
             className="h-28 md:h-80 w-auto"
           />
         </div>
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-8 px-6 py-10 text-sm md:text-base text-gray-200">
+
+        {/* Right Content Area */}
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 px-4 py-10 text-sm md:text-base text-gray-200">
           <div>
             <h3 className="font-bold mb-2">RANKMEONE →</h3>
             <ul className="space-y-1">
@@ -36,14 +39,18 @@ function Footer() {
             </ul>
           </div>
         </div>
+
+        {/* Footer Bottom Text */}
         <div className="absolute bottom-4 right-16 text-sm text-green-400 text-right">
           Copyright © 2025 | Powered by the NSBM Green University Computing Group Project Group 33
         </div>
       </div>
+
+      {/* Custom Wider Half-Circle Shape on the Left Side of the Left Section */}
       <style>
         {`
           .clip-left-footer {
-            clip-path: circle(90% at 0% 50%);
+            clip-path: ellipse(70% 100% at 0% 50%);
             height: 100%;
           }
         `}
