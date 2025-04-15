@@ -1,5 +1,7 @@
+// components/Navbar.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBell } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [showNotif, setShowNotif] = useState(false);
@@ -25,25 +27,30 @@ function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow px-6 py-1">
       <div className="flex items-center justify-between h-[60px]">
         <div className="flex items-center space-x-10">
-          <img
-            src="Images/RankmeoneNavbarLogo.png"
-            alt="RankMeOne Logo"
-            className="h-16 w-auto"
-          />
+          <Link to="/">
+            <img
+              src="/Images/RankmeoneNavbarLogo.png"
+              alt="RankMeOne Logo"
+              className="h-16 w-auto"
+            />
+          </Link>
           <div className="hidden md:flex space-x-6">
-            <a href="#" className="text-gray-700 font-medium hover:text-green-700">
+            <Link to="/" className="text-gray-700 font-medium hover:text-green-700">
               SEO Tools
-            </a>
-            <a href="#" className="text-gray-700 font-medium hover:text-green-700">
+            </Link>
+            <Link to="/projects" className="text-gray-700 font-medium hover:text-green-700">
               Projects
-            </a>
-            <a href="#" className="text-gray-700 font-medium hover:text-green-700">
+            </Link>
+            <Link to="/calendar" className="text-gray-700 font-medium hover:text-green-700">
               Calendar
-            </a>
+            </Link>
+            <Link to="/AboutUs" className="text-gray-700 font-medium hover:text-green-700">
+              About Us
+            </Link>
           </div>
         </div>
+
         <div className="flex items-center space-x-4">
-          {/* Notifications Dropdown */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => {
@@ -66,7 +73,6 @@ function Navbar() {
             )}
           </div>
 
-          {/* Profile Dropdown */}
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => {
@@ -79,12 +85,12 @@ function Navbar() {
             </button>
             {showProfile && (
               <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                <a href="#" className="block px-4 py-2 hover:bg-gray-100">
+                <Link to="/account" className="block px-4 py-2 hover:bg-gray-100">
                   My Account
-                </a>
-                <a href="#" className="block px-4 py-2 hover:bg-gray-100">
+                </Link>
+                <Link to="/logout" className="block px-4 py-2 hover:bg-gray-100">
                   Log Out
-                </a>
+                </Link>
               </div>
             )}
           </div>

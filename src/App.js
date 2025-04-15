@@ -1,15 +1,30 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
+import About from './pages/AboutUs'; 
 import './index.css';
 
-function App() {
+function Home() {
   return (
-    <div className="font-sans bg-white">
+    <>
       <Navbar />
       <Hero />
       <Footer />
-    </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="font-sans bg-white">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/AboutUs" element={<About />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
