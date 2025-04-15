@@ -1,9 +1,15 @@
 import React, { useState, useRef } from 'react';
 
+// Correcting the image imports
+import MetaDescriptionIcon from '../assets/metadescription.png';
+import SubKeywordIcon from '../assets/subkeyword.png';
+import SaveSuccessfulIcon from '../assets/savesuccessful.png';
+
 export default function MetaTitleTool() {
   const [searchQuery, setSearchQuery] = useState('');
   const [title, setTitle] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [saveSuccessPopupVisible, setSaveSuccessPopupVisible] = useState(false);
   const [designs, setDesigns] = useState([]);
   const [tempDesign, setTempDesign] = useState(null);
   const inputRef = useRef(null);
@@ -35,11 +41,17 @@ export default function MetaTitleTool() {
     if (tempDesign) {
       setDesigns([...designs, tempDesign]);
       setTempDesign(null);
+      setIsPopupVisible(false);  // Close the "Save to" popup
+      setSaveSuccessPopupVisible(true);  // Show save success popup when done
     }
   };
 
   const handleTempNameChange = (e) => {
     setTempDesign((prev) => ({ ...prev, name: e.target.value }));
+  };
+
+  const handleCloseSaveSuccessPopup = () => {
+    setSaveSuccessPopupVisible(false); // Close the save success popup
   };
 
   return (
@@ -96,25 +108,25 @@ export default function MetaTitleTool() {
           {/* SEO Meta Description Tool */}
           <div className="border border-gray-200 rounded-lg p-4 mb-6 bg-white min-h-[150px] shadow-lg w-full max-w-sm">
             <div className="flex items-center mb-2">
-              <img src="./assets/metadescription.png" alt="Meta Description Icon" className="w-6 h-6 mr-2" />
+              <img src={MetaDescriptionIcon} alt="Meta Description Icon" className="w-6 h-6 mr-2" />
               <h3 className="text-base font-semibold text-[#013024]">SEO Meta Description</h3>
             </div>
             <p className="text-sm text-gray-600 mb-2">
               Create compelling meta descriptions that boost your website's ranking and attract more visitors.
             </p>
-            <div className="text-sm text-[#013024] text-right cursor-pointer">Learn more</div>
+            <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
           </div>
 
           {/* Sub Keyword Generator Tool */}
           <div className="border border-gray-200 rounded-lg p-4 bg-white min-h-[150px] shadow-lg w-full max-w-sm mb-10">
             <div className="flex items-center mb-2">
-              <img src="./assets/subkeyword.png" alt="Sub Keyword Generator Icon" className="w-6 h-6 mr-2" />
+              <img src={SubKeywordIcon} alt="Sub Keyword Generator Icon" className="w-6 h-6 mr-2" />
               <h3 className="text-base font-semibold text-[#013024]">Sub Keyword Generator</h3>
             </div>
             <p className="text-sm text-gray-600 mb-2">
               Discover relevant sub-keywords to enhance your SEO strategy and drive more targeted traffic.
             </p>
-            <div className="text-sm text-[#013024] text-right cursor-pointer">Learn more</div>
+            <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
           </div>
 
           <div className="w-full max-w-sm">
@@ -133,7 +145,31 @@ export default function MetaTitleTool() {
         </div>
       </div>
 
-      {/* POPUP */}
+      {/* Save Successful Popup */}
+      {saveSuccessPopupVisible && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[400px] shadow-xl relative flex flex-col">
+            {/* Close button above the horizontal line */}
+            <button
+              className="absolute top-2 right-2 text-black font-bold text-2xl"
+              onClick={handleCloseSaveSuccessPopup}
+            >
+              ×
+            </button>
+
+            {/* Horizontal line */}
+            <hr className="border-t border-[#D4D4D4] mb-4" />
+            
+            {/* Save Successful Message */}
+            <div className="flex items-center justify-center">
+              <img src={SaveSuccessfulIcon} alt="Save Successful Icon" className="w-8 h-8 mr-2" />
+              <p className="text-xl font-semibold text-[#013024]">Save Successful</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup for Saving Designs */}
       {isPopupVisible && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-10 rounded-lg w-[1000px] min-h-[600px] shadow-xl relative flex flex-col">
