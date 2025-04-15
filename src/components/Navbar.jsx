@@ -1,4 +1,3 @@
-// components/Navbar.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBell } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -34,7 +33,7 @@ function Navbar() {
               className="h-16 w-auto"
             />
           </Link>
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex space-x-12">
             <Link to="/" className="text-gray-700 font-medium hover:text-green-700">
               SEO Tools
             </Link>
@@ -44,13 +43,10 @@ function Navbar() {
             <Link to="/calendar" className="text-gray-700 font-medium hover:text-green-700">
               Calendar
             </Link>
-            <Link to="/AboutUs" className="text-gray-700 font-medium hover:text-green-700">
-              About Us
-            </Link>
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-8">
           {/* Notification Bell */}
           <div className="relative" ref={notifRef}>
             <button

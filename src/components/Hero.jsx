@@ -4,7 +4,7 @@ function Hero() {
         className="relative bg-cover bg-center bg-no-repeat min-h-screen flex flex-col items-center justify-center text-center px-4"
         style={{ backgroundImage: "url('Images/HomePageBackground.jpg')" }}
       >
-        <h1 className="text-white text-3xl md:text-5xl font-extrabold mb-4">
+        <h1 className="text-white text-3xl md:text-5xl font-extrabold mb-4 mt-[-160px]">
           Welcome to content creator heaven!
         </h1>
         <p className="text-white text-sm md:text-base font-bold mb-6">
