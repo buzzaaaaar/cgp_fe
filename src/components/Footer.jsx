@@ -20,7 +20,7 @@ function Footer() {
             <ul className="space-y-1">
               <li><a href="#" className="hover:text-green-400">SEO Tools</a></li>
               <li><a href="#" className="hover:text-green-400">Projects</a></li>
-              <li><a href="#" className="hover:text-green-400">Calendar</a></li>
+              <li><Link to="/calendar" className="hover:text-green-400">Calendar</Link></li>
             </ul>
           </div>
           <div>

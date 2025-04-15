@@ -8,6 +8,7 @@ import TermsConditions from './pages/TermsConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import FAQ from './pages/FAQ';
 import MyProfile from './pages/MyProfile';
+import Calendar from './pages/Calendar';
 
 import './index.css';
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/my-profile" element={<MyProfile />} /> 
+          <Route path="/calendar" element={<Calendar />} />
         </Routes>
       </div>
     </Router>
