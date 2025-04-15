@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
 import About from './pages/AboutUs'; 
+import ContactUs from './pages/ContactUs';
 import './index.css';
 
 function Home() {
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/AboutUs" element={<About />} />
+          <Route path="/contact" element={<ContactUs />} /> 
         </Routes>
       </div>
     </Router>

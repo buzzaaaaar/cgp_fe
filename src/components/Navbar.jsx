@@ -85,10 +85,10 @@ function Navbar() {
             </button>
             {showProfile && (
               <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                <Link to="/account" className="block px-4 py-2 hover:bg-gray-100">
+                <Link to="/account" className="block px-4 py-2 hover:bg-gray-100 text-black">
                   My Account
                 </Link>
-                <Link to="/logout" className="block px-4 py-2 hover:bg-gray-100">
+                <Link to="/logout" className="block px-4 py-2 hover:bg-gray-100 text-black">
                   Log Out
                 </Link>
               </div>
