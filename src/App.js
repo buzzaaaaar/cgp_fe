@@ -1,14 +1,16 @@
 import React from 'react';
-import MetaTitleTool from './components/MetaTitleTool';
-import './index.css';
-
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MetaTitleTool from './pages/MetaTitleTool';
+import ProjectsPage from './pages/ProjectsPage';
 
 function App() {
   return (
-    <div className="App">
-      <MetaTitleTool />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MetaTitleTool />} />
+        <Route path="/projects" element={<ProjectsPage />} />
+      </Routes>
+    </Router>
   );
 }
 
