@@ -20,6 +20,8 @@ function DesignPage() {
         time: ''
     });
     const [miniCalendarMonth, setMiniCalendarMonth] = useState(dayjs());
+    const [showSavePopup, setShowSavePopup] = useState(false);
+    const [validationError, setValidationError] = useState('');
 
     // Image
     const initialImage = "/Images/MeditationPose.jpg";
@@ -58,6 +60,24 @@ function DesignPage() {
 
     const goToSEOTools = () => {
         navigate('/seo-tools');
+    };
+
+    const handleSaveClick = () => {
+        if (!editEventData.title) {
+            setValidationError('Please enter the title.');
+        } else if (!editEventData.date) {
+            setValidationError('Please select a date.');
+        } else if (!editEventData.time) {
+            setValidationError('Please select a time.');
+        } else {
+            setValidationError('');
+            setShowSavePopup(true);
+            setShowCalendarPanel(false);
+        }
+    };
+
+    const closeSavePopup = () => {
+        setShowSavePopup(false);
     };
 
     const renderCalendar = () => {
@@ -118,7 +138,7 @@ function DesignPage() {
                             <img src="/Images/ShareIcon.png" alt="Share" className="w-5 h-5 mr-2" />
                             Share
                         </button>
-                        <button className="text-white p-2">
+                        <button className="text-white p-2" style={{ fontWeight: '900' }}>
                             <div className="flex flex-col items-center justify-center space-y-1">
                                 <div className="w-1 h-1 bg-white rounded-full"></div>
                                 <div className="w-1 h-1 bg-white rounded-full"></div>
@@ -127,62 +147,63 @@ function DesignPage() {
                         </button>
                     </div>
                 </div>
-
                 {/* Main Content Area with Notes Sidebar */}
                 <div className="flex flex-1">
-                    {/* Left: Main Content */}
-                    <div className="flex-1 px-8 py-6">
-                        {/* Saved Generated Results */}
-                        <div className="mb-8 border-b pb-6">
-                            <h2 className="text-xl font-bold text-[#8CB735] mb-4">SAVED GENERATED RESULTS</h2>
-                            <button
-                                className="bg-[#013024] text-white px-8 py-2 rounded-md font-semibold hover:bg-white hover:text-black hover:border-[#013024] transition duration-300 border border-transparent w-[200px]"
-                                onClick={goToSEOTools}
-                            >
-                                Get Started
-                            </button>
-                        </div>
+              {/* Left: Main Content */}
+      <div className="flex-1 px-8 py-6">
+        {/* Saved Generated Results */}
+        <div className="mb-8 border-b pb-6">
+          <h2 className="text-xl font-bold text-[#8CB735] mb-4">SAVED GENERATED RESULTS</h2>
+          <button
+            className="bg-[#013024] text-white px-8 py-2 rounded-md font-semibold hover:bg-white hover:text-black hover:border-[#013024] transition duration-300 border border-transparent w-[200px]"
+            onClick={goToSEOTools}
+          >
+            Get Started
+          </button>
+        </div>
 
-                        {/* Upload Media */}
-                        <div>
-                            <h2 className="text-xl font-bold text-[#8CB735] mb-4">UPLOAD MEDIA</h2>
-                            <div className="bg-[#A7EC4F] rounded-lg p-16 flex flex-col items-center justify-center w-full h-[400px]">
-                                <p className="text-gray-700 mb-2 font-semibold" style={{ color: '#000000', fontWeight: '600' }}>Drag and drop files here</p>
-                                <span className="text-gray-500 mb-6">or</span>
-                                <button className="bg-[#8CB735] text-white px-8 py-2 rounded-md hover:bg-opacity-90 font-medium">
-                                    Select Files
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        {/* Upload Media */}
+        <div>
+          <h2 className="text-xl font-bold text-[#8CB735] mb-4">UPLOAD MEDIA</h2>
+          <div className="bg-[#A7EC4F] rounded-lg p-16 flex flex-col items-center justify-center w-full h-[400px]">
+            <p className="text-gray-700 mb-2 font-semibold" style={{ color: '#000000', fontWeight: '600' }}>Drag and drop files here</p>
+            <span className="text-gray-500 mb-6">or</span>
+            <button className="bg-[#8CB735] text-white px-8 py-2 rounded-md hover:bg-opacity-90 font-medium">
+              Select Files
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* Right: Notes */}
+      <div className="w-[350px] bg-[#8CB735] flex flex-col h-full min-h-[calc(100vh-150px)]">
+        <div className="p-4 border-b border-white">
+          <h2 className="text-xl font-bold text-white">Notes</h2>
+        </div>
+        <div className="flex-1 p-4 overflow-y-auto">
+          {/* Notes content goes here */}
+        </div>
+        <div className="p-4 flex items-center">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Add a note"
+              className="w-full px-3 py-2 pr-10 rounded border border-green-400 focus:outline-none"
+            />
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-600">
+              <img src="/Images/AddNoteIcon.png" alt="Add Note" className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </div>
 
-                    {/* Right: Notes */}
-                    <div className="w-[350px] bg-[#8CB735] flex flex-col h-full min-h-[calc(100vh-150px)]">
-                        <div className="p-4 border-b border-white">
-                            <h2 className="text-xl font-bold text-white">Notes</h2>
-                        </div>
-                        <div className="flex-1 p-4 overflow-y-auto">
-                            {/* Notes content goes here */}
-                        </div>
-                        <div className="p-4 flex items-center">
-                            <div className="relative w-full">
-                                <input
-                                    type="text"
-                                    placeholder="Add a note"
-                                    className="w-full px-3 py-2 pr-10 rounded border border-green-400 focus:outline-none"
-                                />
-                                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-600">
-                                    <img src="/Images/AddNoteIcon.png" alt="Add Note" className="w-6 h-6" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             {/* Calendar Panel */}
             {showCalendarPanel && (
-                <div className="fixed top-0 right-0 w-[380px] h-full bg-white border-l border-[#D4D4D4] z-50 shadow-lg p-5 overflow-y-auto">
+                <div
+                    className="fixed top-0 right-0 w-[380px] h-full bg-white border-l border-[#D4D4D4] z-50 shadow-lg p-5 overflow-y-auto"
+                >
                     <div className="flex justify-between items-center mb-1">
                         <div className="text-xl font-bold text-[#013024]">Add to Calendar</div>
                         <button
@@ -195,11 +216,10 @@ function DesignPage() {
                     <div className="border-b border-[#D4D4D4] mb-4"></div>
 
                     {/* Calendar Image */}
-<div className="bg-[#D4D4D4] p-1 shadow-[0_2px_6px_#D4D4D4] mb-4">
-  <img src={initialImage} alt="Meditation Pose" className="w-full h-40 object-cover rounded" />
-  <p className="text-center font-semibold mt-2">Health Care Routines</p>
-</div>
-
+                    <div className="bg-[#D4D4D4] p-1 shadow-[0_2px_6px_#D4D4D4] mb-4">
+                        <img src={initialImage} alt="Meditation Pose" className="w-full h-40 object-cover rounded" />
+                        <p className="text-center font-semibold mt-2">Health Care Routines</p>
+                    </div>
 
                     {/* Calendar Panel Content */}
                     <div className="mb-4">
@@ -238,6 +258,8 @@ function DesignPage() {
                                 ›
                             </button>
                         </div>
+{validationError && validationError === 'Please select a date.' &&
+         <p className="text-red-500 text-sm">{validationError}</p>}
                         <div className="grid grid-cols-7 text-center text-xs border rounded shadow-lg">
                             {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
                                 <div key={i} className="py-1 font-semibold text-[#7FAF37]">{d}</div>
@@ -248,25 +270,26 @@ function DesignPage() {
                                 const firstDay = monthStart.day();
 
                                 const cells = [];
-                                for (let i = 0; i < firstDay; i++) {
-                                    cells.push(<div key={`empty-${i}`} className="py-2"></div>);
-                                }
 
-                                for (let day = 1; day <= daysInMonth; day++) {
-                                    const currentDate = monthStart.date(day);
-                                    const formatted = currentDate.format('YYYY-MM-DD');
-                                    const isSelected = editEventData.date === formatted;
-
-                                    cells.push(
+                                for (let i = 0; i < 42; i++) {
+                                    const day = i - firstDay;
+                                    if (day >= 0 && day < daysInMonth) {
+                                      const currentDate = monthStart.date(day + 1);
+                                      const formatted = currentDate.format('YYYY-MM-DD');
+                                      const isSelected = editEventData.date === formatted;
+                                      cells.push(
                                         <div
-                                            key={formatted}
-                                            className={`py-[6px] text-xs cursor-pointer rounded-full ${isSelected ? 'bg-[#A7EC4F] text-white font-bold' : 'hover:bg-[#A7EC4F] hover:text-white'}`}
-                                            onClick={() => handleDateChange(formatted)}
+                                          key={formatted}
+                                          className={`py-[6px] text-xs cursor-pointer rounded-full ${isSelected ? 'bg-[#A7EC4F] text-white font-bold' : 'hover:bg-[#A7EC4F] hover:text-white'}`}
+                                          onClick={() => handleDateChange(formatted)}
                                         >
-                                            {day}
+                                          {day + 1}
                                         </div>
-                                    );
-                                }
+                                      );
+                                    } else {
+                                      cells.push(<div key={`empty-${i}`} className="py-2" />);
+                                    }
+                                  }
                                 return cells;
                             })()}
                         </div>
@@ -299,20 +322,35 @@ function DesignPage() {
                     </div>
 
                     <div className="flex justify-start gap-4">
-                        <button
-                            className="bg-[#7FAF37] text-white px-5 py-2 rounded font-semibold hover:bg-transparent hover:text-[#7FAF37] border border-[#7FAF37] transition"
-                        >
-                            SAVE
-                        </button>
-                        <button
-                            className="bg-[#7FAF37] text-white px-5 py-2 rounded font-semibold hover:bg-transparent hover:text-[#7FAF37] border border-[#7FAF37] transition"
-                            onClick={closeCalendarPanel}
-                        >
-                            CANCEL
-                        </button>
-                    </div>
+         <button
+            className="bg-[#7FAF37] text-white px-5 py-2 rounded font-semibold hover:bg-transparent hover:text-[#7FAF37] border border-[#7FAF37] transition"
+            onClick={handleSaveClick}
+         >
+            SAVE
+         </button>
+         <button
+            className="bg-[#7FAF37] text-white px-5 py-2 rounded font-semibold hover:bg-transparent hover:text-[#7FAF37] border border-[#7FAF37] transition"
+            onClick={closeCalendarPanel}
+         >
+            CANCEL
+         </button>
+      </div>
                 </div>
             )}
+            {/* Save Successful Popup */}
+         {showSavePopup && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded shadow-lg z-50 w-96 drop-shadow-lg">
+               <div className="flex justify-between items-center mb-4">
+                  <div className="text-2xl font-bold text-[#013024] flex items-center" style={{ fontWeight: 700 }}>
+                     <img src="/Images/SaveSuccessfulIcon.png" alt="Save Successful" className="w-8 h-8 mr-2" />
+                     Save Successful
+                  </div>
+                  <button onClick={closeSavePopup} className="text-gray-500 hover:text-gray-700" style={{ marginTop: '-20px', fontSize: '1.5em' }}>
+                     ✕
+                  </button>
+               </div>
+            </div>
+         )}
 
             <Footer />
         </div>
