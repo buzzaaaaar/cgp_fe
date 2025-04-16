@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import projectPageBanner from '../assets/projectpage.jpeg';
-import folderIcon from '../assets/folder.png'; // Import the folder icon
+import folderIcon from '../assets/folder.png';
 
 export default function ProjectsPage() {
   const [folders, setFolders] = useState([]);
@@ -10,18 +10,18 @@ export default function ProjectsPage() {
   const [folderMenuOpenId, setFolderMenuOpenId] = useState(null);
   const [designMenuOpenId, setDesignMenuOpenId] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null); // For storing item to delete
-  const [deleteItemType, setDeleteItemType] = useState(''); // To store whether it is a folder or design
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [deleteItemType, setDeleteItemType] = useState('');
 
   const folderInputRef = useRef(null);
   const designInputRef = useRef(null);
 
   const handleCreateFolder = () => {
+    if (folders.length >= 5) return;
     const newFolder = {
       id: Date.now(),
       name: "Untitled folder"
     };
-
     setFolders([...folders, newFolder]);
     setEditingFolderId(newFolder.id);
   };
@@ -32,14 +32,12 @@ export default function ProjectsPage() {
       name: "Untitled design",
       media: null
     };
-
     setDesigns([...designs, newDesign]);
     setEditingDesignId(newDesign.id);
   };
 
   const handleUploadMedia = (designId) => {
     const placeholderImageUrl = "/api/placeholder/400/320";
-
     setDesigns(designs.map(design =>
       design.id === designId ? { ...design, media: placeholderImageUrl } : design
     ));
@@ -77,14 +75,6 @@ export default function ProjectsPage() {
     }
   };
 
-  const handleFolderMenuToggle = (id) => {
-    setFolderMenuOpenId(folderMenuOpenId === id ? null : id);
-  };
-
-  const handleDesignMenuToggle = (id) => {
-    setDesignMenuOpenId(designMenuOpenId === id ? null : id);
-  };
-
   const handleRenameFolder = (id) => {
     setEditingFolderId(id);
     setFolderMenuOpenId(null);
@@ -92,7 +82,7 @@ export default function ProjectsPage() {
 
   const handleDeleteFolder = (id) => {
     setItemToDelete(id);
-    setDeleteItemType('folder'); // Set delete item type to 'folder'
+    setDeleteItemType('folder');
     setShowPopup(true);
     setFolderMenuOpenId(null);
   };
@@ -104,7 +94,7 @@ export default function ProjectsPage() {
 
   const handleDeleteDesign = (id) => {
     setItemToDelete(id);
-    setDeleteItemType('design'); // Set delete item type to 'design'
+    setDeleteItemType('design');
     setShowPopup(true);
     setDesignMenuOpenId(null);
   };
@@ -145,35 +135,36 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="w-full h-16 bg-white border-b border-gray-200" />
-      <div className="w-full">
+      <div className="w-full" style={{ height: '250px', overflow: 'hidden' }}>
         <img
           src={projectPageBanner}
-          alt="Projects banner with green waves and arrow design"
-          className="w-full h-32 object-cover"
+          alt="Projects banner"
+          className="w-full h-full object-cover"
         />
       </div>
       <div className="flex flex-col px-8 py-8 flex-grow">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[#7FAF37] mb-4">Projects</h1>
-          <p className="text-lg">
-            Organize and collaborate on your projects with ease.
-          </p>
+          <p className="text-lg">Organize and collaborate on your projects with ease.</p>
         </div>
 
-        {/* Folders Section */}
+        {/* Folders */}
         <div className="w-full mb-10 pl-4">
           <h2 className="text-xl font-medium text-[#7FAF37] mb-4">Folders</h2>
-          <div className="flex items-start">
+          <div className="flex items-start flex-wrap gap-6">
             <button
-              className="bg-[#7FAF37] hover:bg-white hover:text-[#7FAF37] hover:border-[#7FAF37] text-white font-medium py-3 px-6 rounded-md w-72 flex items-center justify-center transition-all border-2"
+              className="bg-[#7FAF37] text-white font-medium py-3 px-6 rounded-md w-72 flex items-center justify-center border-2 border-[#7FAF37] hover:bg-white hover:text-[#7FAF37] transition-all"
               onClick={handleCreateFolder}
             >
               <span className="mr-2">+</span> CREATE NEW
             </button>
 
-            <div className="flex flex-wrap gap-6 ml-8 items-center">
+            <div className="flex flex-wrap gap-6 ml-8 items-center max-w-full">
               {folders.map(folder => (
-                <div key={folder.id} className="h-12 px-4 bg-white border-[3px] border-white rounded-md flex items-center shadow-md relative">
+                <div
+                  key={folder.id}
+                  className="h-12 px-4 bg-white border-[3px] border-white rounded-md flex items-center shadow-md relative"
+                >
                   {editingFolderId === folder.id ? (
                     <input
                       ref={folderInputRef}
@@ -188,7 +179,7 @@ export default function ProjectsPage() {
                     <>
                       <img src={folderIcon} alt="Folder Icon" className="w-6 h-6 mr-2" />
                       <div
-                        className="text-[#013024] font-bold hover:underline hover:text-[#7FAF37] hover:border-[#7FAF37] truncate"
+                        className="text-[#013024] font-bold hover:underline hover:text-[#7FAF37] cursor-pointer transition-all"
                         onClick={() => setEditingFolderId(folder.id)}
                       >
                         {folder.name}
@@ -198,20 +189,20 @@ export default function ProjectsPage() {
                           onClick={() =>
                             setFolderMenuOpenId(folderMenuOpenId === folder.id ? null : folder.id)
                           }
-                          className="text-gray-500 font-bold hover:text-gray-700 hover:border-[#7FAF37]"
+                          className="text-gray-500 font-bold"
                         >
                           ⋮
                         </button>
                         {folderMenuOpenId === folder.id && (
                           <div className="absolute right-2 top-6 bg-white border rounded shadow-md z-10">
                             <button
-                              className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full text-left hover:text-[#7FAF37] hover:border-[#7FAF37]"
+                              className="block px-4 py-2 text-sm text-black w-full text-left hover:bg-[#D4D4D4]"
                               onClick={() => handleRenameFolder(folder.id)}
                             >
                               Rename
                             </button>
                             <button
-                              className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full text-left hover:text-[#7FAF37] hover:border-[#7FAF37]"
+                              className="block px-4 py-2 text-sm text-black w-full text-left hover:bg-[#D4D4D4]"
                               onClick={() => handleDeleteFolder(folder.id)}
                             >
                               Delete
@@ -227,12 +218,12 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Designs Section */}
+        {/* Designs */}
         <div className="w-full pl-4">
           <h2 className="text-xl font-medium text-[#7FAF37] mb-4">Designs</h2>
           <div className="flex items-start">
             <button
-              className="bg-[#7FAF37] hover:bg-white hover:text-[#7FAF37] hover:border-[#7FAF37] text-white font-medium py-3 px-6 rounded-md w-72 flex items-center justify-center transition-all border-2"
+              className="bg-[#7FAF37] text-white font-medium py-3 px-6 rounded-md w-72 flex items-center justify-center border-2 border-[#7FAF37] hover:bg-white hover:text-[#7FAF37] transition-all"
               onClick={handleCreateDesign}
             >
               <span className="mr-2">+</span> CREATE NEW
@@ -240,18 +231,17 @@ export default function ProjectsPage() {
 
             <div className="flex flex-wrap gap-6 ml-8">
               {designs.map((design) => (
-                <div key={design.id} className="w-48 shadow-md rounded-lg relative">
+                <div key={design.id} className="w-56 shadow-md rounded-lg relative">
                   <div
-                    className={`w-48 h-32 bg-gray-100 border-[3px] ${
-                      design.media ? 'border-gray-200' : 'border-white'
-                    } rounded-lg mb-2 flex items-center justify-center overflow-hidden cursor-pointer`}
+                    className={`w-56 h-36 bg-gray-100 border-[3px] ${design.media ? 'border-gray-200' : 'border-white'
+                      } rounded-lg mb-2 flex items-center justify-center overflow-hidden cursor-pointer`}
                     onClick={() => handleUploadMedia(design.id)}
                   >
-                    {design.media ? (
+                    {design.media && (
                       <img src={design.media} alt="Design" className="w-full h-full object-cover" />
-                    ) : null}
+                    )}
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-center px-2">
                     {editingDesignId === design.id ? (
                       <input
                         ref={designInputRef}
@@ -265,30 +255,30 @@ export default function ProjectsPage() {
                     ) : (
                       <>
                         <div
-                          className="text-[#013024] font-bold hover:underline hover:text-[#7FAF37] hover:border-[#7FAF37] truncate"
+                          className="text-[#013024] font-bold hover:underline hover:text-[#7FAF37] cursor-pointer truncate transition-all"
                           onClick={() => setEditingDesignId(design.id)}
                         >
                           {design.name}
                         </div>
-                        <div className="relative ml-2">
+                        <div className="relative ml-3">
                           <button
                             onClick={() =>
                               setDesignMenuOpenId(designMenuOpenId === design.id ? null : design.id)
                             }
-                            className="text-gray-500 font-bold hover:text-gray-700 hover:border-[#7FAF37]"
+                            className="text-gray-500 font-bold"
                           >
                             ⋮
                           </button>
                           {designMenuOpenId === design.id && (
-                            <div className="absolute right-2 top-6 bg-white border rounded shadow-md z-10">
+                            <div className="absolute right-0 top-6 bg-white border rounded shadow-md z-10">
                               <button
-                                className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full text-left hover:text-[#7FAF37] hover:border-[#7FAF37]"
+                                className="block px-4 py-2 text-sm text-black w-full text-left hover:bg-[#D4D4D4]"
                                 onClick={() => handleRenameDesign(design.id)}
                               >
                                 Rename
                               </button>
                               <button
-                                className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full text-left hover:text-[#7FAF37] hover:border-[#7FAF37]"
+                                className="block px-4 py-2 text-sm text-black w-full text-left hover:bg-[#D4D4D4]"
                                 onClick={() => handleDeleteDesign(design.id)}
                               >
                                 Delete
@@ -306,29 +296,28 @@ export default function ProjectsPage() {
         </div>
       </div>
 
-      {/* Popup Modal */}
+      {/* Delete Popup */}
       {showPopup && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
           <div className="bg-white w-96 rounded-lg shadow-lg p-6 relative">
             <button
-              className="absolute top-2 right-2 text-black font-bold text-xl"
+              className="absolute top-2 right-2 text-black font-bold text-xl hover:text-[#7FAF37] transition-all"
               onClick={handleClosePopup}
             >
               X
             </button>
-            <div className="text-center text-lg mb-4" style={{ color: '#013024' }}>
-              {deleteItemType === 'folder' && 'Are you sure you want to delete this folder?'}
-              {deleteItemType === 'design' && 'Are you sure you want to delete this design?'}
+            <div className="text-center text-lg mb-4 text-[#013024]">
+              {deleteItemType === 'folder' ? 'Are you sure you want to delete this folder?' : 'Are you sure you want to delete this design?'}
             </div>
             <div className="flex justify-center gap-4">
               <button
-                className="bg-[#7FAF37] text-white px-6 py-2 rounded-md hover:bg-white hover:text-[#7FAF37] hover:border-[#7FAF37] transition-all"
+                className="bg-[#7FAF37] text-white px-6 py-2 rounded-md hover:bg-white hover:text-[#7FAF37] hover:border-[#7FAF37] transition-all border border-[#7FAF37]"
                 onClick={handleConfirmDelete}
               >
                 Yes
               </button>
               <button
-                className="bg-[#7FAF37] text-white px-6 py-2 rounded-md hover:bg-white hover:text-[#7FAF37] hover:border-[#7FAF37] transition-all"
+                className="bg-[#7FAF37] text-white px-6 py-2 rounded-md hover:bg-white hover:text-[#7FAF37] hover:border-[#7FAF37] transition-all border border-[#7FAF37]"
                 onClick={handleCancelDelete}
               >
                 No
