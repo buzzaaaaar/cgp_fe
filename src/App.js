@@ -10,6 +10,7 @@ import FAQ from './pages/FAQ';
 import MyProfile from './pages/MyProfile';
 import Calendar from './pages/Calendar';
 import Design from './pages/Design';
+import DesignSavedResults from './pages/DesignSavedResults';
 
 import './index.css';
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/my-profile" element={<MyProfile />} /> 
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/design" element={<Design />} />
+          <Route path="/design-saved-results" element={<DesignSavedResults />} />
         </Routes>
       </div>
     </Router>

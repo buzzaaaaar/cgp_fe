@@ -11,7 +11,7 @@ dayjs.extend(weekday);
 dayjs.extend(isToday);
 dayjs.extend(isSameOrAfter);
 
-function DesignPage() {
+function DesignSavedResultsPage() {
     const navigate = useNavigate();
     const [showCalendarPanel, setShowCalendarPanel] = useState(false);
     const [editEventData, setEditEventData] = useState({
@@ -23,6 +23,25 @@ function DesignPage() {
 
     // Image
     const initialImage = "/Images/MeditationPose.jpg";
+
+    // Sample Cards Data
+    const [cards, setCards] = useState([
+        {
+            id: 1,
+            title: "SEO Meta Title",
+            content: "Top 10 Healthy Morning Routines to Kickstart Your Day - Expert Tips & Habits"
+        },
+        {
+            id: 2,
+            title: "Instagram Hashtag Generator",
+            content: "#MorningRoutine #HealthyHabits #WellnessJourney #SelfCareMorning #RiseAndShine #MindfulStart #MotivationDaily #HealthyLifestyle #RoutineGoals #WellnessTips"
+        },
+        {
+            id: 3,
+            title: "YouTube Content Ideas",
+            content: "\"5 Life-Changing Morning Habits for a Productive Day\" \"My 30-Minute Healthy Morning Routine (No Gym Required)\" \"Morning Routines That Boost Mental Health and Energy Levels\""
+        }
+    ]);
 
     // Clear Data on Panel Open
     const clearPanelData = useCallback(() => {
@@ -54,10 +73,6 @@ function DesignPage() {
 
     const handleTimeChange = (e) => {
         setEditEventData(prev => ({ ...prev, time: e.target.value }));
-    };
-
-    const goToSEOTools = () => {
-        navigate('/seo-tools');
     };
 
     const renderCalendar = () => {
@@ -105,7 +120,7 @@ function DesignPage() {
             <div className="flex flex-col flex-1 mt-[70px]">
                 {/* Top Section - Dark Green #013024 - with increased height */}
                 <div className="bg-[#013024] text-white px-6 py-5 flex justify-between items-center">
-                    <h1 className="text-2xl font-semibold">Untitled Design</h1>
+                    <h1 className="text-2xl font-semibold">Healthy Morning Routines</h1>
                     <div className="flex items-center space-x-4">
                         <button
                             className="bg-white text-[#013024] px-4 py-2 rounded-md flex items-center"
@@ -135,12 +150,31 @@ function DesignPage() {
                         {/* Saved Generated Results */}
                         <div className="mb-8 border-b pb-6">
                             <h2 className="text-xl font-bold text-[#8CB735] mb-4">SAVED GENERATED RESULTS</h2>
-                            <button
-                                className="bg-[#013024] text-white px-8 py-2 rounded-md font-semibold hover:bg-white hover:text-black hover:border-[#013024] transition duration-300 border border-transparent w-[200px]"
-                                onClick={goToSEOTools}
-                            >
-                                Get Started
-                            </button>
+                            {/* Cards */}
+                            <div className="flex flex-col space-y-4">
+                                {cards.map(card => (
+                                    <div key={card.id} className="bg-white rounded-lg shadow-md p-4">
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-1/2 flex flex-col items-start">
+                                                <h3 className="font-semibold text-lg text-[#013024]">{card.title}</h3>
+                                                <div className="flex items-center space-x-4">
+                                                    <button className="flex items-center text-green-600 hover:text-green-800">
+                                                        <img src="/Images/CopyIcon.png" alt="Copy" className="w-5 h-5 mr-1" />
+                                                        Copy
+                                                    </button>
+                                                    <button className="flex items-center text-red-600 hover:text-red-800">
+                                                        <img src="/Images/DeleteIcon.png" alt="Delete" className="w-5 h-5 mr-1" />
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="w-1/2 text-left">
+                                                <p className="text-gray-700 font-semibold" style={{ fontWeight: 600, color: '#000000' }}>{card.content}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Upload Media */}
@@ -195,11 +229,10 @@ function DesignPage() {
                     <div className="border-b border-[#D4D4D4] mb-4"></div>
 
                     {/* Calendar Image */}
-<div className="bg-[#D4D4D4] p-1 shadow-[0_2px_6px_#D4D4D4] mb-4">
-  <img src={initialImage} alt="Meditation Pose" className="w-full h-40 object-cover rounded" />
-  <p className="text-center font-semibold mt-2">Health Care Routines</p>
-</div>
-
+                    <div className="bg-[#D4D4D4] p-1 shadow-[0_2px_6px_#D4D4D4] mb-4">
+                        <img src={initialImage} alt="Meditation Pose" className="w-full h-40 object-cover rounded" />
+                        <p className="text-center font-semibold mt-2">Health Care Routines</p>
+                    </div>
 
                     {/* Calendar Panel Content */}
                     <div className="mb-4">
@@ -319,4 +352,4 @@ function DesignPage() {
     );
 }
 
-export default DesignPage;
+export default DesignSavedResultsPage;
