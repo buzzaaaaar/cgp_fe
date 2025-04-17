@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
@@ -11,6 +11,17 @@ dayjs.extend(weekday);
 dayjs.extend(isToday);
 dayjs.extend(isSameOrAfter);
 
+function formatNoteTimestamp(isoString) {
+    return new Date(isoString).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+}
+
 function DesignSavedResultsPage() {
     const navigate = useNavigate();
     const [showCalendarPanel, setShowCalendarPanel] = useState(false);
@@ -20,9 +31,24 @@ function DesignSavedResultsPage() {
         time: ''
     });
     const [miniCalendarMonth, setMiniCalendarMonth] = useState(dayjs());
+    const [showSavePopup, setShowSavePopup] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
+    const [isAddedToCalendar, setIsAddedToCalendar] = useState(false);
+    const [isShareDropdownOpen, setIsShareDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
-    // Image
-    const initialImage = "/Images/MeditationPose.jpg";
+    // Notes functionality
+    const [notes, setNotes] = useState([]);
+    const [newNote, setNewNote] = useState("");
+
+    const [accessLevel, setAccessLevel] = useState('Only you can access with this link');
+    const [isThreeDotsDropdownOpen, setIsThreeDotsDropdownOpen] = useState(false);
+    const threeDotsDropdownRef = useRef(null);
+
+    const accessOptions = [
+        'Only you can access with this link',
+        'Anyone with the link can access (sign in required)'
+    ];
 
     // Sample Cards Data
     const [cards, setCards] = useState([
@@ -43,6 +69,9 @@ function DesignSavedResultsPage() {
         }
     ]);
 
+    // Image
+    const initialImage = "/Images/MeditationPose.jpg";
+
     // Clear Data on Panel Open
     const clearPanelData = useCallback(() => {
         setEditEventData({
@@ -51,6 +80,7 @@ function DesignSavedResultsPage() {
             time: ''
         });
         setMiniCalendarMonth(dayjs());
+        setValidationErrors({});
     }, []);
 
     useEffect(() => {
@@ -69,47 +99,138 @@ function DesignSavedResultsPage() {
 
     const handleDateChange = (date) => {
         setEditEventData(prev => ({ ...prev, date: date }));
+        setValidationErrors(prev => ({ ...prev, date: undefined }));
     };
 
     const handleTimeChange = (e) => {
         setEditEventData(prev => ({ ...prev, time: e.target.value }));
+        setValidationErrors(prev => ({ ...prev, time: undefined }));
     };
 
-    const renderCalendar = () => {
-        const monthStart = miniCalendarMonth.startOf('month');
-        const daysInMonth = monthStart.daysInMonth();
-        const firstDay = monthStart.day();
-        const today = dayjs();
-        let day = 1;
-        let calendar = [];
+    const handleSaveClick = () => {
+        const errors = {};
+        if (!editEventData.title) errors.title = 'Please enter the title.';
+        if (!editEventData.date) errors.date = 'Please select a date.';
+        if (!editEventData.time) errors.time = 'Please select a time.';
 
-        for (let i = 0; i < 6; i++) {
-            let week = [];
-            for (let j = 0; j < 7; j++) {
-                if (i === 0 && j < firstDay) {
-                    week.push(<td key={`${i}-${j}`} className="border px-2 py-1"></td>);
-                } else if (day <= daysInMonth) {
-                    const currentDate = dayjs(`${monthStart.year()}-${monthStart.month() + 1}-${day}`);
-                    const isToday = currentDate.isSame(today, 'day');
-                    week.push(
-                        <td
-                            key={`${i}-${j}`}
-                            className={`border px-2 py-1 cursor-pointer ${editEventData.date === currentDate.format('YYYY-MM-DD') ? 'bg-[#A7EC4F]' : (isToday ? 'bg-green-200' : '')}`}
-                            onClick={() => {
-                                handleDateChange(currentDate.format('YYYY-MM-DD'));
-                            }}
-                        >
-                            {day++}
-                        </td>
-                    );
-                } else {
-                    week.push(<td key={`${i}-${j}`} className="border px-2 py-1"></td>);
-                }
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length === 0) {
+            setShowSavePopup(true);
+            setShowCalendarPanel(false);
+            setIsAddedToCalendar(true);
+        }
+    };
+
+    const closeSavePopup = () => {
+        setShowSavePopup(false);
+    };
+
+    // Add new note with current timestamp
+    const handleAddNote = () => {
+        if (newNote.trim()) {
+            const newNoteObj = {
+                id: Date.now(),
+                content: newNote,
+                timestamp: new Date().toISOString(),
+                author: "You"
+            };
+            setNotes([...notes, newNoteObj]);
+            setNewNote("");
+        }
+    };
+
+    const toggleShareDropdown = () => {
+        setIsShareDropdownOpen(!isShareDropdownOpen);
+    };
+
+    const handleAccessLevelChange = (level) => {
+        setAccessLevel(level);
+    };
+
+    const [showCopyConfirm, setShowCopyConfirm] = useState(false);
+
+    const toggleThreeDotsDropdown = () => {
+        setIsThreeDotsDropdownOpen(!isThreeDotsDropdownOpen);
+    };
+
+    const handleRename = () => {
+        alert('Rename clicked');
+        setIsThreeDotsDropdownOpen(false);
+    };
+
+    const handleDelete = () => {
+        alert('Delete clicked');
+        setIsThreeDotsDropdownOpen(false);
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (threeDotsDropdownRef.current && !threeDotsDropdownRef.current.contains(event.target)) {
+                setIsThreeDotsDropdownOpen(false);
             }
-            calendar.push(<tr key={i}>{week}</tr>);
         }
 
-        return calendar;
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [threeDotsDropdownRef]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsShareDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownRef]);
+
+    // Fixed Calendar Rendering
+    const renderCalendarDays = () => {
+        const monthStart = miniCalendarMonth.startOf('month');
+        const daysInMonth = monthStart.daysInMonth();
+        const startDay = monthStart.day(); // Day of week (0-6)
+        
+        const days = [];
+        const rows = [];
+        
+        // Add empty cells for days before the 1st of the month
+        for (let i = 0; i < startDay; i++) {
+            days.push(<td key={`empty-${i}`} className="py-2"></td>);
+        }
+
+        // Add cells for each day of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const currentDate = monthStart.date(day);
+            const formatted = currentDate.format('YYYY-MM-DD');
+            const isToday = currentDate.isSame(dayjs(), 'day');
+            const isSelected = editEventData.date === formatted;
+
+            days.push(
+                <td 
+                    key={formatted}
+                    className={`py-[6px] text-xs cursor-pointer text-center ${
+                        isSelected ? 'bg-[#A7EC4F] text-white font-bold rounded-full' : 
+                        isToday ? 'bg-green-200 rounded-full' : 'hover:bg-[#A7EC4F] hover:text-white'
+                    }`}
+                    onClick={() => handleDateChange(formatted)}
+                >
+                    {day}
+                </td>
+            );
+
+            // Start a new row after 7 days
+            if ((day + startDay) % 7 === 0 || day === daysInMonth) {
+                rows.push(<tr key={`row-${rows.length}`}>{days.slice(-7)}</tr>);
+            }
+        }
+
+        return rows;
     };
 
     return (
@@ -122,24 +243,122 @@ function DesignSavedResultsPage() {
                 <div className="bg-[#013024] text-white px-6 py-5 flex justify-between items-center">
                     <h1 className="text-2xl font-semibold">Healthy Morning Routines</h1>
                     <div className="flex items-center space-x-4">
-                        <button
-                            className="bg-white text-[#013024] px-4 py-2 rounded-md flex items-center"
-                            onClick={openCalendarPanel}
-                        >
-                            <img src="/Images/AddIcon.png" alt="Add" className="w-5 h-5 mr-2" />
-                            Add to Calendar
-                        </button>
-                        <button className="border border-white text-white px-4 py-2 rounded-md flex items-center">
-                            <img src="/Images/ShareIcon.png" alt="Share" className="w-5 h-5 mr-2" />
-                            Share
-                        </button>
-                        <button className="text-white p-2">
-                            <div className="flex flex-col items-center justify-center space-y-1">
-                                <div className="w-1 h-1 bg-white rounded-full"></div>
-                                <div className="w-1 h-1 bg-white rounded-full"></div>
-                                <div className="w-1 h-1 bg-white rounded-full"></div>
-                            </div>
-                        </button>
+                        {isAddedToCalendar ? (
+                            <button
+                                className="bg-[#013024] text-white px-4 py-2 rounded-md flex items-center border border-white"
+                            >
+                                <img src="/Images/AddedIcon.png" alt="Added" className="w-5 h-5 mr-2" />
+                                Added to Calendar
+                            </button>
+                        ) : (
+                            <button
+                                className="bg-white text-[#013024] px-4 py-2 rounded-md flex items-center"
+                                onClick={openCalendarPanel}
+                            >
+                                <img src="/Images/AddIcon.png" alt="Add" className="w-5 h-5 mr-2" />
+                                Add to Calendar
+                            </button>
+                        )}
+                        <div className="relative">
+                            <button
+                                className="border border-white text-white px-4 py-2 rounded-md flex items-center"
+                                onClick={toggleShareDropdown}
+                            >
+                                <img src="/Images/ShareIcon.png" alt="Share" className="w-5 h-5 mr-2" />
+                                Share
+                            </button>
+                            {isShareDropdownOpen && (
+                                <div
+                                    ref={dropdownRef}
+                                    className="absolute right-0 mt-2 w-[450px] bg-white rounded-md shadow-lg z-10 p-6"
+                                >
+                                    <h3 className="text-lg font-medium text-gray-700">Share this design</h3>
+                                    <div className="border-t border-gray-200 mt-3 pt-3">
+                                        <h4 className="flex items-center text-sm font-semibold uppercase tracking-wide">
+                                            <img
+                                                src="/Images/AccessLevelIcon.png"
+                                                alt="Access Level"
+                                                className="w-4 h-4 mr-1"
+                                            />
+                                            <span style={{ color: '#7FAF37' }}>Access level</span>
+                                        </h4>
+                                        <div className="relative inline-block w-full text-gray-700 mt-2">
+                                            <select
+                                                className="w-full h-11 pl-3 pr-6 text-base placeholder-gray-600 border rounded-md appearance-none focus:shadow-outline"
+                                                style={{ borderColor: '#7FAF37', color: 'black', paddingRight: '2rem' }}
+                                                value={accessLevel}
+                                                onChange={(e) => handleAccessLevelChange(e.target.value)}
+                                            >
+                                                {accessOptions.map((option) => (
+                                                    <option key={option} value={option} style={{ color: 'black' }}>
+                                                        {option}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                                <svg
+                                                    className="w-4 h-4 fill-current"
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        className={`w-full px-4 py-2 rounded-md mt-3 font-semibold transition-colors duration-300 ${
+                                            showCopyConfirm
+                                                ? 'bg-white text-[#7FAF37] border-2 border-[#7FAF37]'
+                                                : 'bg-[#7FAF37] text-white hover:bg-[#6c9631]'
+                                        }`}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText('https://your-link.com');
+                                            setShowCopyConfirm(true);
+                                            setTimeout(() => setShowCopyConfirm(false), 2000);
+                                        }}
+                                    >
+                                        {showCopyConfirm ? 'Link copied!' : 'Copy link'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="relative">
+                            <button
+                                onClick={toggleThreeDotsDropdown}
+                                className="text-white p-2"
+                                style={{ fontWeight: '900' }}
+                            >
+                                <div className="flex flex-col items-center justify-center space-y-1">
+                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                </div>
+                            </button>
+
+                            {isThreeDotsDropdownOpen && (
+                                <div
+                                    ref={threeDotsDropdownRef}
+                                    className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10"
+                                >
+                                    <button
+                                        onClick={handleRename}
+                                        className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                        style={{ fontWeight: '700' }}
+                                    >
+                                        Rename
+                                    </button>
+                                    <button
+                                        onClick={handleDelete}
+                                        className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                        style={{ fontWeight: '700' }}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -196,7 +415,21 @@ function DesignSavedResultsPage() {
                             <h2 className="text-xl font-bold text-white">Notes</h2>
                         </div>
                         <div className="flex-1 p-4 overflow-y-auto">
-                            {/* Notes content goes here */}
+                            {notes.map((note) => (
+                                <div key={note.id} className="mb-4">
+                                    <div className="flex items-start mb-1">
+                                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#8CB735] font-bold mr-2 flex-shrink-0">
+                                            {note.author.charAt(0)}
+                                        </div>
+                                        <div className="bg-white rounded-lg p-3 flex-1">
+                                            <p className="text-gray-800">{note.content}</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs text-white ml-10 pl-1">
+                                        {formatNoteTimestamp(note.timestamp)}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                         <div className="p-4 flex items-center">
                             <div className="relative w-full">
@@ -204,8 +437,18 @@ function DesignSavedResultsPage() {
                                     type="text"
                                     placeholder="Add a note"
                                     className="w-full px-3 py-2 pr-10 rounded border border-green-400 focus:outline-none"
+                                    value={newNote}
+                                    onChange={(e) => setNewNote(e.target.value)}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleAddNote();
+                                        }
+                                    }}
                                 />
-                                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-600">
+                                <button 
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-600"
+                                    onClick={handleAddNote}
+                                >
                                     <img src="/Images/AddNoteIcon.png" alt="Add Note" className="w-6 h-6" />
                                 </button>
                             </div>
@@ -245,11 +488,17 @@ function DesignSavedResultsPage() {
                             className="w-full border px-2 py-1 rounded"
                             placeholder="Enter title"
                             value={editEventData.title}
-                            onChange={(e) => setEditEventData(prev => ({ ...prev, title: e.target.value }))}
+                            onChange={(e) => {
+                                setEditEventData(prev => ({ ...prev, title: e.target.value }));
+                                setValidationErrors(prev => ({ ...prev, title: undefined }));
+                            }}
                         />
+                        {validationErrors.title && (
+                            <p className="text-red-500 text-sm">{validationErrors.title}</p>
+                        )}
                     </div>
 
-                    {/* Date Picker */}
+                    {/* Fixed Date Picker */}
                     <div className="mb-4">
                         <label className="text-[#7FAF37] font-semibold flex items-center gap-2 mb-2">
                             <img src="/Images/DateIcon.png" className="w-4 h-4" alt="Date" /> Date
@@ -271,38 +520,23 @@ function DesignSavedResultsPage() {
                                 ›
                             </button>
                         </div>
-                        <div className="grid grid-cols-7 text-center text-xs border rounded shadow-lg">
-                            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                                <div key={i} className="py-1 font-semibold text-[#7FAF37]">{d}</div>
-                            ))}
-                            {(() => {
-                                const monthStart = miniCalendarMonth.startOf('month');
-                                const daysInMonth = monthStart.daysInMonth();
-                                const firstDay = monthStart.day();
-
-                                const cells = [];
-                                for (let i = 0; i < firstDay; i++) {
-                                    cells.push(<div key={`empty-${i}`} className="py-2"></div>);
-                                }
-
-                                for (let day = 1; day <= daysInMonth; day++) {
-                                    const currentDate = monthStart.date(day);
-                                    const formatted = currentDate.format('YYYY-MM-DD');
-                                    const isSelected = editEventData.date === formatted;
-
-                                    cells.push(
-                                        <div
-                                            key={formatted}
-                                            className={`py-[6px] text-xs cursor-pointer rounded-full ${isSelected ? 'bg-[#A7EC4F] text-white font-bold' : 'hover:bg-[#A7EC4F] hover:text-white'}`}
-                                            onClick={() => handleDateChange(formatted)}
-                                        >
+                        {validationErrors.date && (
+                            <p className="text-red-500 text-sm">{validationErrors.date}</p>
+                        )}
+                        <table className="w-full">
+                            <thead>
+                                <tr>
+                                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                                        <th key={day} className="py-1 text-xs font-semibold text-[#7FAF37]">
                                             {day}
-                                        </div>
-                                    );
-                                }
-                                return cells;
-                            })()}
-                        </div>
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {renderCalendarDays()}
+                            </tbody>
+                        </table>
                     </div>
 
                     {/* Time Select */}
@@ -329,11 +563,15 @@ function DesignSavedResultsPage() {
                                 <option key={time} value={time}>{time}</option>
                             ))}
                         </select>
+                        {validationErrors.time && (
+                            <p className="text-red-500 text-sm">{validationErrors.time}</p>
+                        )}
                     </div>
 
                     <div className="flex justify-start gap-4">
                         <button
                             className="bg-[#7FAF37] text-white px-5 py-2 rounded font-semibold hover:bg-transparent hover:text-[#7FAF37] border border-[#7FAF37] transition"
+                            onClick={handleSaveClick}
                         >
                             SAVE
                         </button>
@@ -342,6 +580,21 @@ function DesignSavedResultsPage() {
                             onClick={closeCalendarPanel}
                         >
                             CANCEL
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Save Successful Popup */}
+            {showSavePopup && (
+                <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded shadow-lg z-50 w-96 drop-shadow-lg">
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="text-2xl font-bold text-[#013024] flex items-center" style={{ fontWeight: 700 }}>
+                            <img src="/Images/SaveSuccessfulIcon.png" alt="Save Successful" className="w-8 h-8 mr-2" />
+                            Save Successful
+                        </div>
+                        <button onClick={closeSavePopup} className="text-gray-500 hover:text-gray-700" style={{ marginTop: '-20px', fontSize: '1.5em' }}>
+                            ✕
                         </button>
                     </div>
                 </div>
