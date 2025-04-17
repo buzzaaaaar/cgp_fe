@@ -45,6 +45,41 @@ function DesignSavedResultsPage() {
     const [isThreeDotsDropdownOpen, setIsThreeDotsDropdownOpen] = useState(false);
     const threeDotsDropdownRef = useRef(null);
 
+    // State for delete confirmation
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState({
+        show: false,
+        type: '', // 'result' or 'media'
+        id: null
+    });
+
+    // State for copy confirmation
+    const [showCopyConfirm, setShowCopyConfirm] = useState({
+        show: false,
+        id: null
+    });
+
+    // State for image viewer
+    const [imageViewer, setImageViewer] = useState({
+        show: false,
+        url: ''
+    });
+
+    // State for uploaded media files with both sample images
+    const [mediaFiles, setMediaFiles] = useState([
+        {
+            id: 1,
+            filename: "MeditationPose.jpg",
+            url: "/Images/MeditationPose.jpg",
+            uploadedAt: "2023-05-15T10:30:00Z"
+        },
+        {
+            id: 2,
+            filename: "Breakfast.jpg",
+            url: "/Images/Breakfast.jpg",
+            uploadedAt: "2023-05-16T08:45:00Z"
+        }
+    ]);
+
     const accessOptions = [
         'Only you can access with this link',
         'Anyone with the link can access (sign in required)'
@@ -148,8 +183,6 @@ function DesignSavedResultsPage() {
         setAccessLevel(level);
     };
 
-    const [showCopyConfirm, setShowCopyConfirm] = useState(false);
-
     const toggleThreeDotsDropdown = () => {
         setIsThreeDotsDropdownOpen(!isThreeDotsDropdownOpen);
     };
@@ -162,6 +195,79 @@ function DesignSavedResultsPage() {
     const handleDelete = () => {
         alert('Delete clicked');
         setIsThreeDotsDropdownOpen(false);
+    };
+
+    // Handle file upload
+    const handleFileUpload = (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+            const newFiles = Array.from(files).map((file, index) => ({
+                id: mediaFiles.length + index + 1,
+                filename: file.name,
+                url: URL.createObjectURL(file),
+                uploadedAt: new Date().toISOString()
+            }));
+            setMediaFiles([...mediaFiles, ...newFiles]);
+        }
+    };
+
+    // Handle file delete
+    const handleFileDelete = (id) => {
+        setMediaFiles(mediaFiles.filter(file => file.id !== id));
+    };
+
+    // Show delete confirmation
+    const showDeleteConfirmation = (type, id) => {
+        setShowDeleteConfirm({
+            show: true,
+            type,
+            id
+        });
+    };
+
+    // Close delete confirmation
+    const closeDeleteConfirmation = () => {
+        setShowDeleteConfirm({
+            show: false,
+            type: '',
+            id: null
+        });
+    };
+
+    // Confirm delete action
+    const confirmDelete = () => {
+        if (showDeleteConfirm.type === 'result') {
+            setCards(cards.filter(card => card.id !== showDeleteConfirm.id));
+        } else if (showDeleteConfirm.type === 'media') {
+            setMediaFiles(mediaFiles.filter(file => file.id !== showDeleteConfirm.id));
+        }
+        closeDeleteConfirmation();
+    };
+
+    // Copy content to clipboard
+    const copyToClipboard = (content, id) => {
+        navigator.clipboard.writeText(content);
+        setShowCopyConfirm({
+            show: true,
+            id
+        });
+        setTimeout(() => setShowCopyConfirm(prev => ({ ...prev, show: false })), 2000);
+    };
+
+    // Open image viewer
+    const openImageViewer = (url) => {
+        setImageViewer({
+            show: true,
+            url
+        });
+    };
+
+    // Close image viewer
+    const closeImageViewer = () => {
+        setImageViewer({
+            show: false,
+            url: ''
+        });
     };
 
     useEffect(() => {
@@ -308,17 +414,17 @@ function DesignSavedResultsPage() {
 
                                     <button
                                         className={`w-full px-4 py-2 rounded-md mt-3 font-semibold transition-colors duration-300 ${
-                                            showCopyConfirm
+                                            showCopyConfirm.show && showCopyConfirm.id === 'share'
                                                 ? 'bg-white text-[#7FAF37] border-2 border-[#7FAF37]'
                                                 : 'bg-[#7FAF37] text-white hover:bg-[#6c9631]'
                                         }`}
                                         onClick={() => {
                                             navigator.clipboard.writeText('https://your-link.com');
-                                            setShowCopyConfirm(true);
-                                            setTimeout(() => setShowCopyConfirm(false), 2000);
+                                            setShowCopyConfirm({ show: true, id: 'share' });
+                                            setTimeout(() => setShowCopyConfirm(prev => ({ ...prev, show: false })), 2000);
                                         }}
                                     >
-                                        {showCopyConfirm ? 'Link copied!' : 'Copy link'}
+                                        {showCopyConfirm.show && showCopyConfirm.id === 'share' ? 'Link copied!' : 'Copy link'}
                                     </button>
                                 </div>
                             )}
@@ -372,16 +478,27 @@ function DesignSavedResultsPage() {
                             {/* Cards */}
                             <div className="flex flex-col space-y-4">
                                 {cards.map(card => (
-                                    <div key={card.id} className="bg-white rounded-lg shadow-md p-4">
+                                    <div key={card.id} className="bg-white rounded-lg shadow-md p-4 relative">
+                                        {showCopyConfirm.show && showCopyConfirm.id === card.id && (
+                                            <div className="absolute top-2 right-2 bg-[#7FAF37] text-white px-2 py-1 rounded text-sm">
+                                                Copied!
+                                            </div>
+                                        )}
                                         <div className="flex items-center justify-between">
                                             <div className="w-1/2 flex flex-col items-start">
                                                 <h3 className="font-semibold text-lg text-[#013024]">{card.title}</h3>
                                                 <div className="flex items-center space-x-4">
-                                                    <button className="flex items-center text-green-600 hover:text-green-800">
+                                                    <button 
+                                                        className="flex items-center text-green-600 hover:text-green-800"
+                                                        onClick={() => copyToClipboard(card.content, card.id)}
+                                                    >
                                                         <img src="/Images/CopyIcon.png" alt="Copy" className="w-5 h-5 mr-1" />
                                                         Copy
                                                     </button>
-                                                    <button className="flex items-center text-red-600 hover:text-red-800">
+                                                    <button 
+                                                        className="flex items-center text-red-600 hover:text-red-800"
+                                                        onClick={() => showDeleteConfirmation('result', card.id)}
+                                                    >
                                                         <img src="/Images/DeleteIcon.png" alt="Delete" className="w-5 h-5 mr-1" />
                                                         Delete
                                                     </button>
@@ -397,14 +514,61 @@ function DesignSavedResultsPage() {
                         </div>
 
                         {/* Upload Media */}
-                        <div>
+                        <div className="mb-8">
                             <h2 className="text-xl font-bold text-[#8CB735] mb-4">UPLOAD MEDIA</h2>
                             <div className="bg-[#A7EC4F] rounded-lg p-16 flex flex-col items-center justify-center w-full h-[400px]">
                                 <p className="text-gray-700 mb-2 font-semibold" style={{ color: '#000000', fontWeight: '600' }}>Drag and drop files here</p>
                                 <span className="text-gray-500 mb-6">or</span>
-                                <button className="bg-[#8CB735] text-white px-8 py-2 rounded-md hover:bg-opacity-90 font-medium">
+                                <label className="bg-[#8CB735] text-white px-8 py-2 rounded-md hover:bg-opacity-90 font-medium cursor-pointer">
                                     Select Files
-                                </button>
+                                    <input 
+                                        type="file" 
+                                        className="hidden" 
+                                        multiple 
+                                        onChange={handleFileUpload}
+                                        accept="image/*"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Uploaded Media Files */}
+                        <div className="mb-8">
+                            <h2 className="text-xl font-bold text-[#8CB735] mb-4">UPLOADED MEDIA FILES</h2>
+                            <div className="grid grid-cols-1 gap-4">
+                                {mediaFiles.map(file => (
+                                    <div key={file.id} className="bg-white rounded-lg shadow-md p-4 flex items-center justify-between">
+                                        <div className="flex items-center">
+                                            <img 
+                                                src={file.url} 
+                                                alt={file.filename} 
+                                                className="w-16 h-16 object-cover rounded mr-4"
+                                            />
+                                            <div>
+                                                <p className="font-medium">{file.filename}</p>
+                                                <p className="text-gray-500 text-sm">
+                                                    Uploaded: {formatNoteTimestamp(file.uploadedAt)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex space-x-4">
+                                            <button 
+                                                className="flex items-center text-green-600 hover:text-green-800"
+                                                onClick={() => openImageViewer(file.url)}
+                                            >
+                                                <img src="/Images/ViewIcon.png" alt="View" className="w-5 h-5 mr-1" />
+                                                View
+                                            </button>
+                                            <button 
+                                                className="flex items-center text-red-600 hover:text-red-800"
+                                                onClick={() => showDeleteConfirmation('media', file.id)}
+                                            >
+                                                <img src="/Images/DeleteIcon.png" alt="Delete" className="w-5 h-5 mr-1" />
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -599,6 +763,60 @@ function DesignSavedResultsPage() {
                     </div>
                 </div>
             )}
+
+            {/* Delete Confirmation Popup */}
+{showDeleteConfirm.show && (
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50 w-96">
+        <div className="flex justify-end mb-4">
+            <button 
+                onClick={closeDeleteConfirmation}
+                className="text-gray-500 hover:text-gray-700 text-xl"
+            >
+                ✕
+            </button>
+        </div>
+        <div className="mb-8 text-center">
+            <p className="text-gray-700 font-bold" style={{ fontWeight: 700 }}>
+                {showDeleteConfirm.type === 'result' 
+                    ? "Are you sure you want to delete this generated result?"
+                    : "Are you sure you want to delete this media?"}
+            </p>
+        </div>
+        <div className="flex justify-center space-x-4">
+            <button
+                className="px-6 py-2 rounded font-semibold bg-[#7FAF37] text-white hover:bg-white hover:text-[#7FAF37] hover:border hover:border-[#7FAF37] transition-colors"
+                onClick={confirmDelete}
+            >
+                YES
+            </button>
+            <button
+                className="px-6 py-2 rounded font-semibold bg-[#7FAF37] text-white hover:bg-white hover:text-[#7FAF37] hover:border hover:border-[#7FAF37] transition-colors"
+                onClick={closeDeleteConfirmation}
+            >
+                NO
+            </button>
+        </div>
+    </div>
+)}
+
+{/* Image Viewer Modal */}
+{imageViewer.show && (
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div className="relative" style={{ width: '80vw', height: '80vh' }}>
+            <button 
+                onClick={closeImageViewer}
+                className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300"
+            >
+                ✕
+            </button>
+            <img 
+                src={imageViewer.url} 
+                alt="Preview" 
+                className="w-full h-full object-contain"
+            />
+        </div>
+    </div>
+)}
 
             <Footer />
         </div>
