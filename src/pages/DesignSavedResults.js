@@ -30,6 +30,7 @@ function DesignSavedResultsPage() {
         date: '',
         time: ''
     });
+    const [savedEvent, setSavedEvent] = useState(null); // NEW: Store saved event data
     const [miniCalendarMonth, setMiniCalendarMonth] = useState(dayjs());
     const [showSavePopup, setShowSavePopup] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
@@ -118,14 +119,20 @@ function DesignSavedResultsPage() {
         setValidationErrors({});
     }, []);
 
+    // Updated useEffect to handle saved events
     useEffect(() => {
-        if (showCalendarPanel) {
+        if (showCalendarPanel && !savedEvent) {
             clearPanelData();
         }
-    }, [showCalendarPanel, clearPanelData]);
+    }, [showCalendarPanel, clearPanelData, savedEvent]);
 
+    // Updated openCalendarPanel to handle saved events
     const openCalendarPanel = () => {
         setShowCalendarPanel(true);
+        if (savedEvent) {
+            setEditEventData(savedEvent);
+            setMiniCalendarMonth(dayjs(savedEvent.date));
+        }
     };
 
     const closeCalendarPanel = () => {
@@ -142,6 +149,7 @@ function DesignSavedResultsPage() {
         setValidationErrors(prev => ({ ...prev, time: undefined }));
     };
 
+    // Updated handleSaveClick to store the event
     const handleSaveClick = () => {
         const errors = {};
         if (!editEventData.title) errors.title = 'Please enter the title.';
@@ -151,6 +159,7 @@ function DesignSavedResultsPage() {
         setValidationErrors(errors);
 
         if (Object.keys(errors).length === 0) {
+            setSavedEvent(editEventData);
             setShowSavePopup(true);
             setShowCalendarPanel(false);
             setIsAddedToCalendar(true);
@@ -349,9 +358,11 @@ function DesignSavedResultsPage() {
                 <div className="bg-[#013024] text-white px-6 py-5 flex justify-between items-center">
                     <h1 className="text-2xl font-semibold">Healthy Morning Routines</h1>
                     <div className="flex items-center space-x-4">
+                        {/* Updated Calendar Button */}
                         {isAddedToCalendar ? (
                             <button
                                 className="bg-[#013024] text-white px-4 py-2 rounded-md flex items-center border border-white"
+                                onClick={openCalendarPanel}
                             >
                                 <img src="/Images/AddedIcon.png" alt="Added" className="w-5 h-5 mr-2" />
                                 Added to Calendar
@@ -765,58 +776,58 @@ function DesignSavedResultsPage() {
             )}
 
             {/* Delete Confirmation Popup */}
-{showDeleteConfirm.show && (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50 w-96">
-        <div className="flex justify-end mb-4">
-            <button 
-                onClick={closeDeleteConfirmation}
-                className="text-gray-500 hover:text-gray-700 text-xl"
-            >
-                ✕
-            </button>
-        </div>
-        <div className="mb-8 text-center">
-            <p className="text-gray-700 font-bold" style={{ fontWeight: 700 }}>
-                {showDeleteConfirm.type === 'result' 
-                    ? "Are you sure you want to delete this generated result?"
-                    : "Are you sure you want to delete this media?"}
-            </p>
-        </div>
-        <div className="flex justify-center space-x-4">
-            <button
-                className="px-6 py-2 rounded font-semibold bg-[#7FAF37] text-white hover:bg-white hover:text-[#7FAF37] hover:border hover:border-[#7FAF37] transition-colors"
-                onClick={confirmDelete}
-            >
-                YES
-            </button>
-            <button
-                className="px-6 py-2 rounded font-semibold bg-[#7FAF37] text-white hover:bg-white hover:text-[#7FAF37] hover:border hover:border-[#7FAF37] transition-colors"
-                onClick={closeDeleteConfirmation}
-            >
-                NO
-            </button>
-        </div>
-    </div>
-)}
+            {showDeleteConfirm.show && (
+                <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50 w-96">
+                    <div className="flex justify-end mb-4">
+                        <button 
+                            onClick={closeDeleteConfirmation}
+                            className="text-gray-500 hover:text-gray-700 text-xl"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    <div className="mb-8 text-center">
+                        <p className="text-gray-700 font-bold" style={{ fontWeight: 700 }}>
+                            {showDeleteConfirm.type === 'result' 
+                                ? "Are you sure you want to delete this generated result?"
+                                : "Are you sure you want to delete this media?"}
+                        </p>
+                    </div>
+                    <div className="flex justify-center space-x-4">
+                        <button
+                            className="px-6 py-2 rounded font-semibold bg-[#7FAF37] text-white hover:bg-white hover:text-[#7FAF37] hover:border hover:border-[#7FAF37] transition-colors"
+                            onClick={confirmDelete}
+                        >
+                            YES
+                        </button>
+                        <button
+                            className="px-6 py-2 rounded font-semibold bg-[#7FAF37] text-white hover:bg-white hover:text-[#7FAF37] hover:border hover:border-[#7FAF37] transition-colors"
+                            onClick={closeDeleteConfirmation}
+                        >
+                            NO
+                        </button>
+                    </div>
+                </div>
+            )}
 
-{/* Image Viewer Modal */}
-{imageViewer.show && (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-        <div className="relative" style={{ width: '80vw', height: '80vh' }}>
-            <button 
-                onClick={closeImageViewer}
-                className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300"
-            >
-                ✕
-            </button>
-            <img 
-                src={imageViewer.url} 
-                alt="Preview" 
-                className="w-full h-full object-contain"
-            />
-        </div>
-    </div>
-)}
+            {/* Image Viewer Modal */}
+            {imageViewer.show && (
+                <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+                    <div className="relative" style={{ width: '80vw', height: '80vh' }}>
+                        <button 
+                            onClick={closeImageViewer}
+                            className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300"
+                        >
+                            ✕
+                        </button>
+                        <img 
+                            src={imageViewer.url} 
+                            alt="Preview" 
+                            className="w-full h-full object-contain"
+                        />
+                    </div>
+                </div>
+            )}
 
             <Footer />
         </div>

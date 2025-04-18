@@ -30,18 +30,23 @@ function DesignPage() {
         date: '',
         time: ''
     });
+    const [savedEvent, setSavedEvent] = useState(null);
     const [miniCalendarMonth, setMiniCalendarMonth] = useState(dayjs());
     const [showSavePopup, setShowSavePopup] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
     const [isAddedToCalendar, setIsAddedToCalendar] = useState(false);
     const [isShareDropdownOpen, setIsShareDropdownOpen] = useState(false);
+    const [accessLevel, setAccessLevel] = useState('Only you can access with this link');
     const dropdownRef = useRef(null);
 
     // Notes functionality
-    const [notes, setNotes] = useState([]); // Empty array
+    const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("");
 
-    const [accessLevel, setAccessLevel] = useState('Only you can access with this link');
+    // File upload functionality
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef(null);
 
     const accessOptions = [
         'Only you can access with this link',
@@ -63,13 +68,17 @@ function DesignPage() {
     }, []);
 
     useEffect(() => {
-        if (showCalendarPanel) {
+        if (showCalendarPanel && !savedEvent) {
             clearPanelData();
         }
-    }, [showCalendarPanel, clearPanelData]);
+    }, [showCalendarPanel, clearPanelData, savedEvent]);
 
     const openCalendarPanel = () => {
         setShowCalendarPanel(true);
+        if (savedEvent) {
+            setEditEventData(savedEvent);
+            setMiniCalendarMonth(dayjs(savedEvent.date));
+        }
     };
 
     const closeCalendarPanel = () => {
@@ -99,6 +108,7 @@ function DesignPage() {
         setValidationErrors(errors);
 
         if (Object.keys(errors).length === 0) {
+            setSavedEvent(editEventData);
             setShowSavePopup(true);
             setShowCalendarPanel(false);
             setIsAddedToCalendar(true);
@@ -113,14 +123,41 @@ function DesignPage() {
     const handleAddNote = () => {
         if (newNote.trim()) {
             const newNoteObj = {
-                id: Date.now(), // Using timestamp for unique ID
+                id: Date.now(),
                 content: newNote,
-                timestamp: new Date().toISOString(), // Current time in ISO format
+                timestamp: new Date().toISOString(),
                 author: "You"
             };
             setNotes([...notes, newNoteObj]);
             setNewNote("");
         }
+    };
+
+    // File handling functions
+    const handleFileSelect = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files);
+    };
+
+    const handleDragEnter = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const files = Array.from(e.dataTransfer.files);
+        setSelectedFiles(files);
     };
 
     const renderCalendar = () => {
@@ -230,6 +267,7 @@ function DesignPage() {
                         {isAddedToCalendar ? (
                             <button
                                 className="bg-[#013024] text-white px-4 py-2 rounded-md flex items-center border border-white"
+                                onClick={openCalendarPanel}
                             >
                                 <img src="/Images/AddedIcon.png" alt="Added" className="w-5 h-5 mr-2" />
                                 Added to Calendar
@@ -362,13 +400,66 @@ function DesignPage() {
                         {/* Upload Media */}
                         <div>
                             <h2 className="text-xl font-bold text-[#8CB735] mb-4">UPLOAD MEDIA</h2>
-                            <div className="bg-[#A7EC4F] rounded-lg p-16 flex flex-col items-center justify-center w-full h-[400px]">
-                                <p className="text-gray-700 mb-2 font-semibold" style={{ color: '#000000', fontWeight: '600' }}>Drag and drop files here</p>
+                            
+                            {/* Hidden file input */}
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileSelect}
+                                multiple
+                                style={{ display: 'none' }}
+                            />
+                            
+                            <div 
+                                className={`rounded-lg p-16 flex flex-col items-center justify-center w-full h-[400px] transition-colors ${
+                                    isDragging ? 'bg-[#8CB735]' : 'bg-[#A7EC4F]'
+                                }`}
+                                onDragEnter={handleDragEnter}
+                                onDragLeave={handleDragLeave}
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                            >
+                                <p className="text-gray-700 mb-2 font-semibold" style={{ color: '#000000', fontWeight: '600' }}>
+                                    {isDragging ? 'Drop files here' : 'Drag and drop files here'}
+                                </p>
                                 <span className="text-gray-500 mb-6">or</span>
-                                <button className="bg-[#8CB735] text-white px-8 py-2 rounded-md hover:bg-opacity-90 font-medium">
+                                <button 
+                                    className="bg-[#8CB735] text-white px-8 py-2 rounded-md hover:bg-opacity-90 font-medium"
+                                    onClick={() => fileInputRef.current.click()}
+                                >
                                     Select Files
                                 </button>
                             </div>
+                            
+                            {/* File preview section */}
+                            {selectedFiles.length > 0 && (
+                                <div className="mt-4">
+                                    <h3 className="text-lg font-semibold mb-2">Selected Files:</h3>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {selectedFiles.map((file, index) => (
+                                            <div key={index} className="border p-2 rounded">
+                                                <div className="flex items-center">
+                                                    {file.type.startsWith('image/') ? (
+                                                        <img 
+                                                            src={URL.createObjectURL(file)} 
+                                                            alt={file.name} 
+                                                            className="w-16 h-16 object-cover mr-2"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-16 h-16 bg-gray-200 flex items-center justify-center mr-2">
+                                                            <span className="text-xs">{file.name.split('.').pop()}</span>
+                                                        </div>
+                                                    )}
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-medium truncate">{file.name}</p>
+                                                        <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(2)} KB</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* Right: Notes */}
