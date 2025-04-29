@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MetaDescription from './pages/MetaDescription';
 import SubKeywordGenerator from './pages/SubKeywordGenerator';
+import TopicalMapGenerator from './pages/TopicalMapGenerator';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/MetaDescription" element={<MetaDescription />} />
         <Route path="/SubKeywordGenerator" element={<SubKeywordGenerator />} />
+        <Route path="/TopicalMapGenerator" element={<TopicalMapGenerator />} />
         
       </Routes>
     </Router>
