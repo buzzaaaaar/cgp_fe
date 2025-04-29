@@ -6,6 +6,7 @@ import FolderPage from './pages/FolderPage';
 import FolderPageWithDesign from './pages/FolderPageWithDesign';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import MetaDescription from './pages/MetaDescription';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/FolderPageDesign" element={<FolderPageWithDesign />} />
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
+        <Route path="/MetaDescription" element={<MetaDescription />} />
         
       </Routes>
     </Router>
