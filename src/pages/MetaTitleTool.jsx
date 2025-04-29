@@ -84,7 +84,7 @@ export default function MetaTitleTool() {
               onChange={(e) => setTitle(e.target.value)}
               rows={8}
               className="w-full max-w-4xl p-4 border border-gray-300 rounded-md text-base resize-none focus:outline-none"
-              placeholder="Write your SEO meta title here..."
+              placeholder=""
             ></textarea>
           </div>
 
