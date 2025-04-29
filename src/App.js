@@ -10,6 +10,8 @@ import MetaDescription from './pages/MetaDescription';
 import SubKeywordGenerator from './pages/SubKeywordGenerator';
 import TopicalMapGenerator from './pages/TopicalMapGenerator';
 import BlogPostIdeas from './pages/BlogPostIdeas';
+import JSONLDFAQGenerator from './pages/JSON-LDFAQGenerator';
+
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
         <Route path="/SubKeywordGenerator" element={<SubKeywordGenerator />} />
         <Route path="/TopicalMapGenerator" element={<TopicalMapGenerator />} />
         <Route path="/BlogPostIdeas" element={<BlogPostIdeas />} />
+        <Route path="/JSONGenerator" element={<JSONLDFAQGenerator />} />
         
       </Routes>
     </Router>
