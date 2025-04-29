@@ -12,6 +12,7 @@ import TopicalMapGenerator from './pages/TopicalMapGenerator';
 import BlogPostIdeas from './pages/BlogPostIdeas';
 import JSONLDFAQGenerator from './pages/JSON-LDFAQGenerator';
 import YoutubeTagGenerator from './pages/YoutubeTagGenerator';
+import YoutubeContentIdeas from './pages/YoutubeContentIdeas';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/BlogPostIdeas" element={<BlogPostIdeas />} />
         <Route path="/JSONGenerator" element={<JSONLDFAQGenerator />} />
         <Route path="/YoutubeTag" element={<YoutubeTagGenerator />} />
+        <Route path="/YoutubeContent" element={<YoutubeContentIdeas />} />
         
       </Routes>
     </Router>

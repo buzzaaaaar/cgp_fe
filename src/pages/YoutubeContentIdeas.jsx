@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
 
 // Correcting the image imports
-import YoutubeContent from '../assets/YoutubeContent.png';
+import YoutubeTag from '../assets/YoutubeTag.png';
 import YoutubeHashtag from '../assets/YoutubeHashtag.png';
 import SaveSuccessfulIcon from '../assets/savesuccessful.png';
 
-export default function YoutubeTagGenerator() {
+export default function YoutubeContentIdeas() {
   const [searchQuery, setSearchQuery] = useState('');
   const [title, setTitle] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -59,7 +59,7 @@ export default function YoutubeTagGenerator() {
       <div className="h-16"></div>
 
       <div className="mb-6">
-        <h1 className="text-5xl font-extrabold text-[#7FAF37] mb-4">Youtube Tag Generator</h1>
+        <h1 className="text-5xl font-extrabold text-[#7FAF37] mb-4">Youtube Content Ideas</h1>
         <hr className="border-t border-gray-300" />
       </div>
 
@@ -105,19 +105,7 @@ export default function YoutubeTagGenerator() {
         <div className="lg:w-1/3 w-full flex flex-col items-center">
           <h2 className="text-xl font-semibold text-[#7FAF37] text-center mb-6">Related Tools</h2>
 
-           {/* Youtube Content Ideas*/}
-           <div className="border border-gray-200 rounded-lg p-4 mb-6 bg-white min-h-[150px] shadow-lg w-full max-w-sm">
-            <div className="flex items-center mb-2">
-              <img src={YoutubeContent} alt="Blog Post Ideas" className="w-6 h-6 mr-2" />
-              <h3 className="text-base font-semibold text-[#013024]">Youtube Content Ideas</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-2">
-            Get fresh and trending video content ideas to engage your audience and grow your channel
-            </p>
-            <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
-          </div>
-
-          {/* Youtube Hashtag Generator */}
+           {/* Youtube Hashtag Generator */}
           <div className="border border-gray-200 rounded-lg p-4 mb-6 bg-white min-h-[150px] shadow-lg w-full max-w-sm">
             <div className="flex items-center mb-2">
               <img src={YoutubeHashtag} alt="Topical Map Generator" className="w-6 h-6 mr-2" />
@@ -125,6 +113,18 @@ export default function YoutubeTagGenerator() {
             </div>
             <p className="text-sm text-gray-600 mb-2">
             Find the perfect hashtags to increase reach and engagement on your YouTube videos
+            </p>
+            <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
+          </div>
+
+          {/* Youtube Tag Generator */}
+          <div className="border border-gray-200 rounded-lg p-4 mb-6 bg-white min-h-[150px] shadow-lg w-full max-w-sm">
+            <div className="flex items-center mb-2">
+              <img src={YoutubeTag} alt="Topical Map Generator" className="w-6 h-6 mr-2" />
+              <h3 className="text-base font-semibold text-[#013024]">Youtube Tag Generator</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-2">
+            Generate optimized YouTube tags to increase discoverability and boost video views
             </p>
             <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
           </div>
