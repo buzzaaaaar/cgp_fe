@@ -15,6 +15,7 @@ import YoutubeTagGenerator from './pages/YoutubeTagGenerator';
 import YoutubeContentIdeas from './pages/YoutubeContentIdeas';
 import YoutubeHashtagGenerator from './pages/YoutubeHashtagGenerator';
 import InstagramCaptionGenerator from './pages/InstagramCaptionGenerator';
+import InstagramContentIdeas from './pages/InstagramContentIdeas';
 
 
 
@@ -37,6 +38,7 @@ function App() {
         <Route path="/YoutubeContent" element={<YoutubeContentIdeas />} />
         <Route path="/YoutubeHashtag" element={<YoutubeHashtagGenerator />} />
         <Route path="/InstaCaption" element={<InstagramCaptionGenerator />} />
+        <Route path="/InstaContent" element={<InstagramContentIdeas />} />
         
       </Routes>
     </Router>
