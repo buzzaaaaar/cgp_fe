@@ -19,6 +19,7 @@ import InstagramContentIdeas from './pages/InstagramContentIdeas';
 import InstagramHastagGenerator from './pages/InstagramHashtagGenerator';
 import FacebookCaptionGenerators from './pages/FacebookCaptionGenerator';
 import FacebookContentIdeas from './pages/FacebookContentIdeas';
+import FacebookHashtagGenerators from './pages/FacebookHashtagGenerator';
 
 
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/InstaHashtag" element={<InstagramHastagGenerator />} />
         <Route path="/FBCaption" element={<FacebookCaptionGenerators />} />
         <Route path="/FBContent" element={<FacebookContentIdeas />} />
+        <Route path="/FBHashtag" element={<FacebookHashtagGenerators />} />
         
       </Routes>
     </Router>
