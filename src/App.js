@@ -14,6 +14,7 @@ import JSONLDFAQGenerator from './pages/JSON-LDFAQGenerator';
 import YoutubeTagGenerator from './pages/YoutubeTagGenerator';
 import YoutubeContentIdeas from './pages/YoutubeContentIdeas';
 import YoutubeHashtagGenerator from './pages/YoutubeHashtagGenerator';
+import InstagramCaptionGenerator from './pages/InstagramCaptionGenerator';
 
 
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/YoutubeTag" element={<YoutubeTagGenerator />} />
         <Route path="/YoutubeContent" element={<YoutubeContentIdeas />} />
         <Route path="/YoutubeHashtag" element={<YoutubeHashtagGenerator />} />
+        <Route path="/InstaCaption" element={<InstagramCaptionGenerator />} />
         
       </Routes>
     </Router>
