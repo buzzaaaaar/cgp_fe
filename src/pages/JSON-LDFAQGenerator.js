@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 // Correcting the image imports
 import TopicalMapGenerator from '../assets/TopicalMapGenerator.png';
-import JSONGenerator from '../assets/JsonGenerator.png';
+import BlogPostIdeas from '../assets/BlogPostIdeas.png';
 import SaveSuccessfulIcon from '../assets/savesuccessful.png';
 
-export default function BlogPostIdeas() {
+export default function JSONLDFAQGenerator() {
   const [searchQuery, setSearchQuery] = useState('');
   const [title, setTitle] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -55,22 +57,23 @@ export default function BlogPostIdeas() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-hanken px-4 sm:px-8 py-6">
+    <div className="min-h-screen px-4 py-6 bg-white font-hanken sm:px-8">
+      <Navbar />
       <div className="h-16"></div>
 
       <div className="mb-6">
-        <h1 className="text-5xl font-extrabold text-[#7FAF37] mb-4">Blog Post Ideas</h1>
+        <h1 className="text-5xl font-extrabold text-[#7FAF37] mb-4">JSON-LD FAQ Generator</h1>
         <hr className="border-t border-gray-300" />
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-10">
-        <div className="lg:w-2/3 w-full">
+      <div className="flex flex-col gap-10 lg:flex-row">
+        <div className="w-full lg:w-2/3">
           <div className="mb-4">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full max-w-4xl px-4 py-3 border border-gray-300 rounded-md text-base focus:outline-none"
+              className="w-full max-w-4xl px-4 py-3 text-base border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter your target keyword..."
             />
             <div className="text-right text-sm text-[#013024] mt-1 max-w-4xl">
@@ -83,7 +86,7 @@ export default function BlogPostIdeas() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               rows={8}
-              className="w-full max-w-4xl p-4 border border-gray-300 rounded-md text-base resize-none focus:outline-none"
+              className="w-full max-w-4xl p-4 text-base border border-gray-300 rounded-md resize-none focus:outline-none"
               placeholder=""
             ></textarea>
           </div>
@@ -102,17 +105,17 @@ export default function BlogPostIdeas() {
           </div>
         </div>
 
-        <div className="lg:w-1/3 w-full flex flex-col items-center">
+        <div className="flex flex-col items-center w-full lg:w-1/3">
           <h2 className="text-xl font-semibold text-[#7FAF37] text-center mb-6">Related Tools</h2>
 
-          {/* JSON-LD FAQ Generator */}
-          <div className="border border-gray-200 rounded-lg p-4 mb-6 bg-white min-h-[150px] shadow-lg w-full max-w-sm">
+           {/* Blog Post Ideas */}
+           <div className="border border-gray-200 rounded-lg p-4 mb-6 bg-white min-h-[150px] shadow-lg w-full max-w-sm">
             <div className="flex items-center mb-2">
-              <img src={JSONGenerator} alt="JSON-LD FAQ Generator" className="w-6 h-6 mr-2" />
-              <h3 className="text-base font-semibold text-[#013024]">JSON-LD FAQ Generator</h3>
+              <img src={BlogPostIdeas} alt="Blog Post Ideas" className="w-6 h-6 mr-2" />
+              <h3 className="text-base font-semibold text-[#013024]">Blog Post Ideas</h3>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
-            Easily create structured FAQ data in JSON-LD format to improve visibility in search results
+            <p className="mb-2 text-sm text-gray-600">
+            Get creative and engaging blog post ideas to keep your content fresh and search-engine friendly
             </p>
             <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
           </div>
@@ -123,7 +126,7 @@ export default function BlogPostIdeas() {
               <img src={TopicalMapGenerator} alt="Topical Map Generator" className="w-6 h-6 mr-2" />
               <h3 className="text-base font-semibold text-[#013024]">Topical Map Generator</h3>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
+            <p className="mb-2 text-sm text-gray-600">
             Build a structured content roadmap to target the right topics and strengthen your SEO
             </p>
             <div className="text-sm text-[#013024] text-right cursor-pointer hover:underline hover:text-[#7FAF37]">Learn more</div>
@@ -147,11 +150,11 @@ export default function BlogPostIdeas() {
 
       {/* Save Successful Popup */}
       {saveSuccessPopupVisible && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg w-[400px] shadow-xl relative flex flex-col">
             {/* Close button above the horizontal line */}
             <button
-              className="absolute top-2 right-2 text-black font-bold text-2xl"
+              className="absolute text-2xl font-bold text-black top-2 right-2"
               onClick={handleCloseSaveSuccessPopup}
             >
               ×
@@ -171,12 +174,12 @@ export default function BlogPostIdeas() {
 
       {/* Popup for Saving Designs */}
       {isPopupVisible && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-10 rounded-lg w-[1000px] min-h-[600px] shadow-xl relative flex flex-col">
             {/* Title */}
             <div className="flex justify-between items-center mb-4 border-b border-[#D4D4D4] pb-4">
               <h3 className="text-2xl font-semibold text-[#013024]">Save to</h3>
-              <button className="text-black font-bold text-2xl" onClick={handleClosePopup}>
+              <button className="text-2xl font-bold text-black" onClick={handleClosePopup}>
                 ×
               </button>
             </div>
@@ -185,7 +188,7 @@ export default function BlogPostIdeas() {
             <h3 className="text-xl font-semibold text-[#7FAF37] mb-4">Designs</h3>
 
             {/* Content */}
-            <div className="flex-grow flex items-start gap-4 overflow-x-auto mb-6">
+            <div className="flex items-start flex-grow gap-4 mb-6 overflow-x-auto">
               {/* Create New Button */}
               <div className="flex-shrink-0">
                 <button
@@ -199,9 +202,9 @@ export default function BlogPostIdeas() {
               {/* Saved Designs */}
               {designs.map((design) => (
                 <div key={design.id} className="flex-shrink-0 w-48">
-                  <div className="w-48 h-48 bg-gray-200 rounded-md mb-2 flex items-center justify-center overflow-hidden">
+                  <div className="flex items-center justify-center w-48 h-48 mb-2 overflow-hidden bg-gray-200 rounded-md">
                     {design.media ? (
-                      <img src={design.media} alt="Design" className="w-full h-full object-cover" />
+                      <img src={design.media} alt="Design" className="object-cover w-full h-full" />
                     ) : (
                       <span className="text-gray-500">Blank</span>
                     )}
@@ -213,7 +216,7 @@ export default function BlogPostIdeas() {
               {/* Temp Design */}
               {tempDesign && (
                 <div className="flex-shrink-0 w-48">
-                  <div className="w-48 h-48 bg-gray-200 rounded-md mb-2 flex items-center justify-center overflow-hidden">
+                  <div className="flex items-center justify-center w-48 h-48 mb-2 overflow-hidden bg-gray-200 rounded-md">
                     <span className="text-gray-500">Blank</span>
                   </div>
                   <input
@@ -221,7 +224,7 @@ export default function BlogPostIdeas() {
                     type="text"
                     value={tempDesign.name}
                     onChange={handleTempNameChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-base focus:outline-none"
+                    className="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none"
                   />
                 </div>
               )}
@@ -241,6 +244,7 @@ export default function BlogPostIdeas() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }
