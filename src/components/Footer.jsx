@@ -18,8 +18,8 @@ function Footer() {
           <div>
             <h3 className="font-bold mb-2">RANKMEONE →</h3>
             <ul className="space-y-1">
-              <li><a href="#" className="hover:text-green-400">SEO Tools</a></li>
-              <li><a href="#" className="hover:text-green-400">Projects</a></li>
+              <li><a href="/seo-tools" className="hover:text-green-400">SEO Tools</a></li>
+              <li><a href="/projects" className="hover:text-green-400">Projects</a></li>
               <li><Link to="/calendar" className="hover:text-green-400">Calendar</Link></li>
             </ul>
           </div>
